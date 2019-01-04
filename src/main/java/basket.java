@@ -1,18 +1,20 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.io.*;
 
 public class basket {
-    private ArrayList<purchase> purchases;
+    ArrayList<purchase> purchases;
+
     //All monetary amounts are in integer cents.
+
     private int totalTaxes;
     private int totalPrice;
 
-    private void basket(String fileName) {
+    public basket(String fileName) {
+
         //In a more real-world situation, items might be identified by a PublicId or slug.
         //This exercise gave me input in plain text, so I'm going with that and parsing each input as a text file.
+
         ArrayList<purchase> purchases = new ArrayList<purchase>();
         try {
             FileReader input = new FileReader(fileName);
@@ -49,8 +51,7 @@ public class basket {
                 // Also, I'm going to assume that all imported (and only imported) purchase descriptions contain the substring "imported". (this is true for the examples)
 
                 Boolean imported = description.contains("imported");
-
-                this.purchases.add(new purchase(amount, description, unitPrice, basicExempt, imported));
+                purchases.add(new purchase(amount, description, unitPrice, basicExempt, imported));
             }
         } catch (FileNotFoundException exception) {
             System.out.println(fileName + " was not found.");
@@ -59,14 +60,14 @@ public class basket {
         }
         int taxTally = 0;
         int totalTally = 0;
-        for (int i = 0; i < this.purchases.size(); i++) {
-            taxTally += this.purchases.get(i).getTaxDue();
-            totalTally += this.purchases.get(i).getAmount() * this.purchases.get(i).getUnitPrice();
+        for (int i = 0; i < purchases.size(); i++) {
+            taxTally += purchases.get(i).getTaxDue();
+            totalTally += purchases.get(i).getAmount() * purchases.get(i).getUnitPrice();
         }
         totalTally += taxTally;
         this.totalTaxes = taxTally;
         this.totalPrice = totalTally;
-
+        this.purchases = purchases;
     }
 
     public ArrayList<purchase> getPurchases() { return purchases; }
@@ -92,9 +93,7 @@ public class basket {
             this.imported = imported;
         }
 
-        public Integer getAmount() {
-            return amount;
-        }
+        public Integer getAmount() { return amount; }
 
         public void setAmount(Integer amount) {
             this.amount = amount;
@@ -151,6 +150,10 @@ public class basket {
                 tax += 5 * (int) Math.ceil(amount * unitPrice * 0.05 / 5);
             }
             return tax;
+        }
+
+        public Integer getPrice() {
+            return amount * unitPrice + this.getTaxDue();
         }
     }
 }
